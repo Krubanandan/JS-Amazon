@@ -77,7 +77,9 @@ fetch("backend/products.json")
                         Added
                     </div>
 
-                    <button class="add-to-cart-button button-primary">
+                    <button class="add-to-cart-button button-primary js-add-to-cart" data-product-id="${
+                      product.id
+                    }">
                         Add to Cart
                     </button>
                 </div>
@@ -88,5 +90,44 @@ fetch("backend/products.json")
 
     // Once all products have been processed, insert the generated HTML into the DOM
     document.querySelector(".products-grid").innerHTML = pageHtml;
+
+    document.querySelectorAll(".js-add-to-cart").forEach((button) => {
+      button.addEventListener("click", () => {
+        // const productContainer = button.closest(".product-container"); // Find the closest parent container
+        // const productName = productContainer
+        //   .querySelector(".product-name")
+        //   .textContent.trim(); // Get the product name text
+        // console.log(`Added Product: ${productName}`);
+        // console.log(button.dataset.productName);
+        const productId = button.dataset.productId;
+        // console.log(button.dataset.productId);
+        let matchedItem;
+        cart.forEach((item) => {
+          if (productId === item.productId) {
+            matchedItem = item;
+          }
+        });
+        if (matchedItem) {
+          matchedItem.quantity += 1;
+        } else {
+          cart.push({
+            productId: productId,
+            quantity: 1,
+          });
+        }
+
+        console.log(cart);
+        let cartQuantity = 0;
+
+        cart.forEach((item) => {
+          cartQuantity += item.quantity;
+          
+
+          
+        });
+        console.log(cartQuantity);
+        document.querySelector('.js-cart-quantity').innerHTML=cartQuantity;
+      });
+    });
   })
   .catch((error) => console.error("Error fetching JSON:", error));
