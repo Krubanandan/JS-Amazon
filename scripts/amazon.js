@@ -1,23 +1,4 @@
-// const products = [
-//   {
-//     image: "images/products/athletic-cotton-socks-6-pairs.jpg",
-//     name: "Black and Gray Athletic Cotton Socks - 6 Pairs",
-//     rating: {
-//       star: 4.5,
-//       count: 87,
-//     },
-//     price: 1090,
-//   },
-//   {
-//     image: "images/products/intermediate-composite-basketball.jpg",
-//     name: "Intermediate Size Basketball",
-//     rating: {
-//       star: 4,
-//       count: 127,
-//     },
-//     price: 2095,
-//   },
-// ];
+import { cart, addCart } from "./cart.js";
 
 let products = [];
 
@@ -90,6 +71,15 @@ fetch("backend/products.json")
 
     // Once all products have been processed, insert the generated HTML into the DOM
     document.querySelector(".products-grid").innerHTML = pageHtml;
+    function updateQuantity() {
+      let cartQuantity = 0;
+
+      cart.forEach((item) => {
+        cartQuantity += item.quantity;
+      });
+      console.log(cartQuantity);
+      document.querySelector(".js-cart-quantity").innerHTML = cartQuantity;
+    }
 
     document.querySelectorAll(".js-add-to-cart").forEach((button) => {
       button.addEventListener("click", () => {
@@ -99,34 +89,21 @@ fetch("backend/products.json")
         //   .textContent.trim(); // Get the product name text
         // console.log(`Added Product: ${productName}`);
         // console.log(button.dataset.productName);
-        const productId = button.dataset.productId;
+
         // console.log(button.dataset.productId);
-        let matchedItem;
-        cart.forEach((item) => {
-          if (productId === item.productId) {
-            matchedItem = item;
-          }
-        });
-        if (matchedItem) {
-          matchedItem.quantity += 1;
-        } else {
-          cart.push({
-            productId: productId,
-            quantity: 1,
-          });
-        }
+        const productId = button.dataset.productId;
 
+        addCart(productId);
         console.log(cart);
-        let cartQuantity = 0;
+        updateQuantity();
 
-        cart.forEach((item) => {
-          cartQuantity += item.quantity;
-          
+        const productContainer = button.closest(".product-container");
+        const addedCart = productContainer.querySelector(".added-to-cart");
+        addedCart.style.opacity = 1;
 
-          
-        });
-        console.log(cartQuantity);
-        document.querySelector('.js-cart-quantity').innerHTML=cartQuantity;
+        setTimeout(() => {
+          addedCart.style.opacity = 0;
+        }, 2000);
       });
     });
   })
